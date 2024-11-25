@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রাকিবুল অ্যাপ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 400% 400%;
+            animation: rainbow 10s ease infinite;
+        }
+
+        @keyframes rainbow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .button {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .button img {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        #cameraPreview video {
+            border: 2px solid #333;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #cameraPreview button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>রাকিবুল ইসলাম</h1>
+    <div class="container">
+        <button id="goButton" class="button">
+            <img src="https://via.placeholder.com/20" alt="পেলে">
+            পেলে
+        </button>
+        <button id="googleButton" class="button">
+            <img src="https://via.placeholder.com/20" alt="গুগল">
+            গুগল
+        </button>
+        <button id="cameraButton" class="button">
+            <img src="https://via.placeholder.com/20" alt="ক্যামেরা">
+            ক্যামেরা
+        </button>
+        <button id="flashLightButton" class="button">
+            <img src="https://via.placeholder.com/20" alt="ফ্ল্যাশ লাইট">
+            ফ্ল্যাশ লাইট
+        </button>
+        <button id="fileShareButton" class="button">
+            <img src="https://via.placeholder.com/20" alt="ফাইল শেয়ার">
+            ফাইল শেয়ার
+        </button>
+        <div id="cameraPreview"></div>
+    </div>
+
+    <script>
+        // পেলে বাটন
+        document.getElementById("goButton").addEventListener("click", function() {
+            window.location.href = "https://rakibstore966222.blogspot.com";
+        });
+
+        // গুগল বাটন
+        document.getElementById("googleButton").addEventListener("click", function() {
+            window.open("https://www.google.com", "_blank");
+        });
+
+        // ক্যামেরা বাটন
+        document.getElementById("cameraButton").addEventListener("click", function() {
+            const cameraPreview = document.getElementById("cameraPreview");
+            cameraPreview.innerHTML = `<video autoplay></video><br><button id="closeCamera">ক্যামেরা বন্ধ করুন</button>`;
+            const video = cameraPreview.querySelector("video");
+
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    cameraPreview.innerHTML = "<p>ক্যামেরা অ্যাক্সেস করা সম্ভব নয়!</p>";
+                });
+
+            // ক্যামেরা বন্ধ করার অপশন
+            document.getElementById("closeCamera").addEventListener("click", function() {
+                const tracks = video.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                cameraPreview.innerHTML = "";
+            });
+        });
+
+        // ফ্ল্যাশ লাইট বাটন
+        document.getElementById("flashLightButton").addEventListener("click", function() {
+            navigator.permissions.query({ name: "camera" }).then(permission => {
+                if (permission.state === "granted") {
+                    const track = new MediaStreamTrack();
+                    track.applyConstraints({
+                        advanced: [{ torch: true }]
+                    }).catch(() => alert("ফ্ল্যাশলাইট চালু করা সম্ভব নয়!"));
+                } else {
+                    alert("ফ্ল্যাশলাইটের অনুমতি প্রয়োজন!");
+                }
+            });
+        });
+
+        // ফাইল শেয়ার বাটন
+        document.getElementById("fileShareButton").addEventListener("click", function() {
+            navigator.share({
+                title: "ফাইল শেয়ার",
+                text: "এই ফাইলটি শেয়ার করুন।",
+                url: window.location.href
+            }).catch(err => alert("ফাইল শেয়ারিং সম্ভব নয়!"));
+        });
+    </script>
+</body>
+</html>
